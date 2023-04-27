@@ -16,7 +16,7 @@ jobs:
     env:
       Username: ${{secrets.Username}}
       Password: ${{secrets.Password}}
-      ApiKey: ${{secrets.ApiKet}}
+      ApiKey: ${{secrets.ApiKey}}
       Application: ${{github.event.repository.name}}
       Configuration: Debug
 
@@ -56,7 +56,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Test Results
-          path: src/testresults/${{ env.APPLICATION }}
+          path: BookStore/testresults/${{ env.APPLICATION }}
           retention-days: 1
 
 
