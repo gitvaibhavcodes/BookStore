@@ -9,7 +9,7 @@ jobs:
   BuildAndTest:
     defaults:
       run:
-        working-directory: BookStore
+        working-directory: ${{GITHUB_WORKSPACE}}/BookStore
     environment: Non-Production
     runs-on: ubuntu-latest
 
