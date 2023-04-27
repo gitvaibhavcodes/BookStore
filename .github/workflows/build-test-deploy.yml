@@ -1,0 +1,62 @@
+name: Build, Test & Deploy
+on:
+    push:
+      branches: [master]
+
+    workflow_dispatch:
+
+jobs:
+  BuildAndTest:
+    defaults:
+      run:
+        working-directory: BookStore
+    environment: Non-Production
+    runs-on: [self-hosted, Linux]
+
+    env:
+      Username: ${{secrets.Username}}
+      Password: ${{secrets.Password}}
+      ApiKey: ${{secrets.ApiKet}}
+      Application: ${{github.event.repository.name}}
+      Configuration: Debug
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+        
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '2.1.x'
+
+      - name: Restore
+        run: |
+          dotnet restore ${{ env.APPLICATION }}.sln
+
+      - name: Build
+        run: |
+          dotnet build ${{ env.APPLICATION }}.sln -c ${{ env.CONFIGURATION }} --no-restore
+      
+      - name: Test
+        run: |
+          dotnet test ${{ env.APPLICATION }}.sln -c ${{ env.CONFIGURATION }} --filter Category!=Integration --logger trx --no-build --nologo --results-directory ./testresults/${{ env.APPLICATION }}
+      
+      - name: Publish Test Results
+        uses: dorny/test-reporter@v1
+        continue-on-error: true
+        if: always()
+        with:
+          name: 'Test Results'
+          path: 'src/testresults/${{ env.APPLICATION }}/**/*.trx'
+          reporter: dotnet-trx
+          list-tests: 'failed'
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: Test Results
+          path: src/testresults/${{ env.APPLICATION }}
+          retention-days: 1
+
+
