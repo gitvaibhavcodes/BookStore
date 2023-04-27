@@ -31,6 +31,7 @@ jobs:
           dotnet-version: '2.1.x'
 
       - name: Restore
+        working-directory: 'BookStore'
         run: |
           dotnet restore ${{ env.APPLICATION }}.sln
 
@@ -48,7 +49,7 @@ jobs:
         if: always()
         with:
           name: 'Test Results'
-          path: 'src/testresults/${{ env.APPLICATION }}/**/*.trx'
+          path: './testresults/${{ env.APPLICATION }}/**/*.trx'
           reporter: dotnet-trx
           list-tests: 'failed'
 
