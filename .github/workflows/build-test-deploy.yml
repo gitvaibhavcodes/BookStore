@@ -31,7 +31,7 @@ jobs:
           dotnet-version: '2.1.x'
 
       - name: Restore
-        working-directory: '/home/runner/work/BookStore'
+        working-directory: '/usr/bin/git/BookStore'
         run: |
           dotnet restore ${{ env.APPLICATION }}.sln
 
